@@ -47,7 +47,7 @@ export default function Header() {
               }`}
               onClick={() => navigate("/sign-in")}
             >
-              회원가입
+              로그인
             </li>
           </ul>
         </div>
