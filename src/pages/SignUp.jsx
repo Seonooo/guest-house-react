@@ -12,6 +12,10 @@ export default function SignUp() {
     password: "",
   });
   const { name, email, password } = formData;
+
+  const onSubmit = (e) => {
+    e.preventDefault();
+  };
   const onChange = (e) => {
     setFormData((prevState) => ({
       ...prevState,
@@ -30,7 +34,7 @@ export default function SignUp() {
           />
         </div>
         <div className="w-full md:w-[67%] lg:w-[40%] lg:ml-20">
-          <form>
+          <form onSubmit={onSubmit}>
             <input
               className="w-full mb-6 px-4 py-2 text-xl text-gray-700 bg-white border-gray-300 rounded transition ease-in-out"
               type="text"
