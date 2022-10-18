@@ -1,11 +1,28 @@
-import React from "react";
+import React, { useEffect, useState } from "react";
 import { useLocation, useNavigate } from "react-router-dom";
+import { getAuth, onAuthStateChanged } from "firebase/auth";
 
 export default function Header() {
+  const [pageState, setPageState] = useState("로그인");
   const location = useLocation().pathname;
   const navigate = useNavigate();
+  const auth = getAuth();
+  useEffect(() => {
+    onAuthStateChanged(auth, (user) => {
+      if (user) {
+        setPageState("프로필");
+      } else {
+        setPageState("로그인");
+      }
+    });
+  }, [auth]);
 
-  const pathMathRoute = (route) => {
+  const onLogout = () => {
+    auth.signOut();
+    navigate("/");
+  };
+
+  const pathMatchRoute = (route) => {
     if (route === location) {
       return true;
     }
@@ -27,7 +44,7 @@ export default function Header() {
           <ul className="flex space-x-10">
             <li
               className={`cursor-pointer py-3 text-sm font-semibold text-gray-400 border-b-[3px] border-b-transparent ${
-                pathMathRoute("/") && "text-black border-b-red-500"
+                pathMatchRoute("/") && "text-black border-b-red-500"
               }`}
               onClick={() => navigate("/")}
             >
@@ -35,7 +52,7 @@ export default function Header() {
             </li>
             <li
               className={`cursor-pointer py-3 text-sm font-semibold text-gray-400 border-b-[3px] border-b-transparent ${
-                pathMathRoute("/offers") && "text-black border-b-red-500"
+                pathMatchRoute("/offers") && "text-black border-b-red-500"
               }`}
               onClick={() => navigate("/offers")}
             >
@@ -43,12 +60,21 @@ export default function Header() {
             </li>
             <li
               className={`cursor-pointer py-3 text-sm font-semibold text-gray-400 border-b-[3px] border-b-transparent ${
-                pathMathRoute("/sign-in") && "text-black border-b-red-500"
+                (pathMatchRoute("/sign-in") || pathMatchRoute("/profile")) &&
+                "text-black border-b-red-500"
               }`}
-              onClick={() => navigate("/sign-in")}
+              onClick={() => navigate("/profile")}
             >
-              로그인
+              {pageState}
             </li>
+            {pageState === "프로필" ? (
+              <li
+                className="cursor-pointer py-3 text-sm font-semibold text-gray-400 border-b-[3px] border-b-transparent"
+                onClick={onLogout}
+              >
+                로그아웃
+              </li>
+            ) : null}
           </ul>
         </div>
       </header>
